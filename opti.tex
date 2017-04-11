@@ -1,0 +1,30 @@
+\begin{center}
+\begin{tikzpicture}[scale=0.5,font=\small,axis/.style={very thick, ->, >=sorangeth'}]
+\visible<1>
+{
+\draw [black=100](-2.25,-1.25) rectangle (2.25,0.25);
+\node[teal] at(0,-0.5) {Planner};
+%\node[black] at(0,-0.75) {};
+
+\draw [black=100](-1.75,-4.25) rectangle (1.75,-2.75);
+\node[teal] at(0,-3.25) {Dynamic};
+\node[teal] at(0,-3.75) {System};
+
+\node[orange] at(4.2,-2){\color{orange}{Observe}};
+
+
+\node[orange] at(-4.2,-2){Decision};
+
+\draw[thick,-](-2.25,-0.5)--(-3,-0.5);
+\draw[thick,-](-3,-0.5)--(-3,-3.5);
+\draw[thick,->](-3,-3.5)--(-1.75,-3.5);
+
+\draw[thick,->](3,-0.5)--(2.25,-0.5);
+\draw[thick,-](3,-3.5)--(3,-0.5);
+\draw[thick,-](1.75,-3.5)--(3,-3.5);
+}
+
+
+
+\end{tikzpicture}
+\end{center}
