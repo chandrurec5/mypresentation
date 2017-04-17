@@ -1,4 +1,5 @@
 \documentclass[10pt,handout]{beamer}
+\setbeamertemplate{bibliography item}[triangle]
 
 \usetheme{metropolis}
 \usepackage{appendixnumberbeamer}
@@ -27,7 +28,7 @@
   \setbeamertemplate{section in toc}[sections numbeorange]
   \tableofcontents[hideallsubsections]
 \end{frame}
-\section{Setup}
+\section{Framework (Markov Decision Process)}
 \begin{frame}[fragile]{Sequential Decisions under Uncertainty: Example}
 \begin{tikzpicture}[overlay]
 \node[black] at (7.5,0) {\includegraphics[scale=0.25]{mouse-axes.png}};
@@ -104,7 +105,7 @@ Control
 \end{frame}
 
 \begin{frame}[fragile]{Markov Decision Process (MDP)}
-\begin{block}{MDP}
+\begin{block}{MDP <\S,\A,P,g,\alpha>}
 \begin{itemize}
 \item State space $\S=\{s^1,\ldots,s^n\}$
 \item Action space $\A=\{a^1,\ldots,a^d\}$
@@ -118,7 +119,7 @@ Pr\{s_{t+1}=s'| s_t=s, a_t=a\}=p_a(s,s')
 \end{itemize}
 \end{block}
 \begin{block}{Aim for optimal}
-Compute  $J^*(s)=\max_{u} J(s),\,\forall s\in \S$ and $u^*$ s.t $J_{u^*}=J^*$
+Compute  $J^*(s)=\max_{u} J(s),\,\forall s\in \S$ and $u^*$ s.t $J_{u^*}=J^*$\footnote{$J^*\in \R{|\S|}$}
 \end{block}
 \begin{tikzpicture}[overlay]
 \node[black] at (10,5) {\includegraphics[scale=0.25]{mouse-single.png}};
@@ -127,7 +128,7 @@ Compute  $J^*(s)=\max_{u} J(s),\,\forall s\in \S$ and $u^*$ s.t $J_{u^*}=J^*$
 
 
 
-\begin{frame}[fragile]{Paradigm Shift in Decision Making}
+\begin{frame}[fragile]{Different Paradigms in Decision Making}
 \begin{block}{Classification}
 \begin{itemize}
 \item $(x,y)=(label,class)$, where $x\in \X$ and $y\in \Y=\{1,\ldots,K\}$
@@ -157,16 +158,17 @@ Overhead in computing $u^*$ ({\color{orange}{We are not lucky here}})
 \end{block}
 
 \begin{block}{Curse}
-$|\S|$ grows exponentially in number of states
+$|\S|$ grows exponentially in the number of state variables $s=(x_1,\ldots, x_q)$
 \end{block}
 \begin{block}{Example}
 \begin{itemize}
 \item A Queue has buffer size $n-1$, then $|\S|=n$
-\item Queuing network has $p$ such queues, then $|\S|=n^p$
-\item $n=10$, p=$5$, $|\S|=10^5$
+\item Queuing network has $p$ such queues, then $|\S|=n^q$
+\item $n=10$, $q=5$, $|\S|=10^5$
 \item Addition of an extra queue blows the state space $10$ times
 \end{itemize}
 \end{block}
+$s=(x_1,\ldots, x_q)$, then $|\S|=|\X|^q$
 \end{frame}
 
 \begin{frame}[fragile]{Challenge~I: {Curse-of-Dimensionality}...}
@@ -208,7 +210,8 @@ Approximate Dynamic Programming (ADP)
 
 \begin{frame}[fragile]{Challenge~II: {Lack of Model}}
 \begin{itemize}
-\item Noisy Sample Trajectories ({\color{orange}{$s_0-a_0-s_1-a_1-\cdots$}})
+\item Model $P,g$ is not given
+\item Noisy Sample Trajectories ({\color{orange}{$s_0-a_0-s_1-a_1-\cdots$}}), where ${\color{orange}{s_{t+1}\sim p_{a_t}(s_t,\cdot)}}$
 \item Adaptive Online updates ({\color{orange}{$\theta(0), \theta(1), \ldots, \theta(t)$}})
 \end{itemize}
 \begin{table}
@@ -280,7 +283,6 @@ Chandrashekar, L.;  Bhatnagar, S and Szepesv\'{a}ri C., ``A Linearly Reduced App
 
 \section{Exact Dynamic Programming}
 
-
 \begin{frame}[fragile]{Dynamic Programming}
 \begin{block}{Values lead to Policy}
 \begin{itemize}
@@ -297,7 +299,7 @@ J^*(s)&=\max_{a\in \A} g_a(s)+\alpha p_a(s,\cdot)^\top J^*\\
 Q^*(s,a)&= g_a(s)+\alpha p_a(s,\cdot)^\top \max_{a\in \A} Q^*(\cdot,a)
 \end{align*}
 \end{block}
-\begin{block}{State-Action Values}
+\begin{block}{State-Action Values $Q^*\in \R^{|\S|\times |\A|}$}
 $u^*(s)\eqdef \U(Q^*)(s) =\arg\max_{a\in \A} Q^*(s,a)$
 \end{block}
 
@@ -309,15 +311,6 @@ $u^*(s)\eqdef \U(Q^*)(s) =\arg\max_{a\in \A} Q^*(s,a)$
 
 
 \begin{frame}[fragile]{Bellman Operator}
-\begin{comment}
-\begin{block}{Useful Norms}
-\begin{itemize}
-\item $\norm{J_1-J_2}_{1,c}=\sum_{s\in \S} \left|J_1(s)-J_2(s)\right|$
-\item $\norm{J_1-J_2}_{D}=\mfrac{1}{2}(J_1-J_2)^\top D (J_1-J_2)$
-\item $\norm{J_1-J_2}_\infty=\max_{s\in \S}\left|J_1(s)-J_2(s)\right|$
-\end{itemize}
-\end{block}
-\end{comment}
 \begin{block}{Bellman Operator(s)}
 \begin{align*}
 (TJ)(s)&\eqdef\max_{a\in \A} g_a(s)+\alpha p_a(s,\cdot)^\top J\\
@@ -331,17 +324,6 @@ $u^*(s)\eqdef \U(Q^*)(s) =\arg\max_{a\in \A} Q^*(s,a)$
 \item Monotonicity+Shift $\Rightarrow$ $T$ is contraction in $L_\infty$ norm
 \end{itemize}
 \end{block}
-\begin{comment}
-\begin{block}{Proof}
-Let $\epsilon=\norm{J_1-J_2}_\infty$, then
-\begin{align*}
-J_1-\epsilon \one&\leq J_2 \leq J_1+ \epsilon \one\\
-T(J_1-\epsilon \one)&\leq TJ_2 \leq T(J_1+ \epsilon \one)\\
-TJ_1- \alpha\epsilon \one&\leq TJ_2 \leq TJ_1+ \alpha\epsilon \one
-\end{align*}
-$\norm{TJ_1-TJ_2}_\infty=\alpha\epsilon$
-\end{block}
-\end{comment}
 \begin{block}{Fixed Point Equation}
 \centering $J^*=TJ^*$, $Q^*=HQ^*$
 \end{block}
@@ -367,6 +349,10 @@ J^*&=\arg\min_{J\in \R^{\S}} c^\top J\\
 &\quad s.t. J\geq TJ
 \end{align*}
 \end{block}
+
+\begin{center}
+{\color{orange}{Convergent and Exact}}
+\end{center}
 \end{frame}
 
 
@@ -436,8 +422,8 @@ Let $J_1,J_2\in \R^{|\S|}$
 \end{block}
 
 
-\begin{block}{Superharomic}
-$f\in \R^{|\S|}$ is superharmonic to $g$ if $f\geq g$
+\begin{block}{Superharomic Function}
+For $f,g \in \R^{|\S|}$, $f$ is superharmonic to $g$ if $f\geq g$
 \end{block}
 \end{frame}
 
@@ -448,11 +434,12 @@ $\psi>0\in \R^{|\S|}$ then
 \beta_\psi=\max_{a\in \A}\frac{\alpha p_a(s,\cdot)^\top \psi}{\psi(s)}
 \end{align*}
 \end{block}
-\begin{block}{Lyapunov}
+\begin{block}{Lyapunov Function}
 $\psi$ is a Lyapunov function if $\beta_\psi<1$
 \end{block}
 
-\begin{block}{$M\colon \R^{|\S|}\ra\R^{|\S|}$}
+\begin{block}{Contraction Maps}
+$M\colon \R^{|\S|}\ra\R^{|\S|}$
 \begin{itemize}
 \item {Monotonicity:} $M J_1\geq M J_2, \mb \forall$ $J_1\geq J_2$
 \item {Shift:} $M (J+k\one)= M J+\gamma k\one$, $\gamma \in (0,1)$
@@ -473,7 +460,7 @@ Curse-of-Dimensionality (expensive to populate the table)
 \begin{block}{How?}
 Compute $\tj\approx J^*$ and $\tu=\U \tj$
 \end{block}
-\begin{block}{Promise of ADP \cite{BertB}}
+\begin{block}{Promise of ADP [Dynamic Programming \& Optimal Control -Bertsekas]}
 {\color{orange}{$\underbrace{||J_{\tilde{u}}-J^*||_\infty}_{\text{Performance Loss}} \leq \frac{2}{1-\alpha}\underbrace{||J^*-\tilde{J}||_\infty}_{\text{Prediction Error}}$}}
 \end{block}
 \end{frame}
@@ -490,7 +477,7 @@ Compute $\tj\approx J^*$ and $\tu=\U \tj$
 \end{block}
 \begin{itemize}
 \item $\Phi$ is a $|\S|\times k $ {\color{orange}{feature matrix}} and $\tr=(\tr(1),\ldots,\tr(k))\in \R^k$ is a weight vector.
-\item Idea is to choose fewer basis i.e. $k<<n$
+\item Idea is to choose fewer basis i.e. $k<<|\S|$
 \item $\Pi=\Phi (\Phi^\top D \Phi)^{-1}\Phi^\top D$ is the projection given by $\Pi J =\arg\min_{\Phi r}\norm{J-\Phi r}^2_D$
 \end{itemize}
 
@@ -528,7 +515,7 @@ $\norm{\phi_i}_\infty=1,\, \sum_i |\Phi(s,i)|\leq 1,\,\forall s\in \S, \,\forall
 \end{frame}
 
 \begin{frame}[fragile]{How to Compress?}
-\begin{block}{Approximate Linear Programming{\color{orange}\ding{53}}}
+\begin{block}{Approximate Linear Programming \cite{schweitzer1985generalized} {\color{orange}\ding{53}}}
 \begin{align*}
  r^*&=\arg\min_{r\in \R^{k}} c^\top \Phi r\\
 &\quad s.t. \Phi r\geq T \Phi r \,({\color{orange}{Large~Number~of~Constraints}})
@@ -567,7 +554,7 @@ $\norm{\phi_i}_\infty=1,\, \sum_i |\Phi(s,i)|\leq 1,\,\forall s\in \S, \,\forall
 \end{minipage}
 \end{tabular}
 \end{table}
-\begin{block}{Open Problems}
+\begin{block}{Problems}
 \begin{itemize}
 \item Choose the right compression to eliminate norm mismatch?
 \item Develop new tools to analyze constraint reduction?
@@ -590,22 +577,37 @@ $\norm{\phi_i}_\infty=1,\, \sum_i |\Phi(s,i)|\leq 1,\,\forall s\in \S, \,\forall
 
 \section{ADP in Tropical Algebra}
 
+\begin{frame}[fragile]{Tropical Algebra}
+\begin{block}{$\maxp$ Semiring}
+Addition: $x\op y\eqdef\min\{x,y\}$\\
+Multiplication: $x\om y\eqdef x+y$
+\end{block}
 
-\begin{frame}[fragile]{Tropical Semiring}
-\begin{block}{Literature}
+\begin{block}{Synchronization}
+X_4=\max(X_1,X_2,X_3)\\
+Examples: Rail network, Shop floor
+\end{block}
+
+\begin{block}{$\minp$ Semiring}
+Addition: $x\op y\eqdef\min\{x,y\}$\\
+Multiplication: $x\om y\eqdef x+y$
+\end{block}
+
+
+\begin{block}{Linearity}
 \begin{itemize}
-\item \cite{baccelli1994synchronization} - ``Synchronization and Linearity''
-\item \cite{cohen1996kernels} - Projection onto Semimodules
-\item \cite{akian2008max} - Deterministic Control
-\item \cite{mceneaney2008curse,mceneaney2009convergence} - HJB PDEs
-\item \cite{gaubert2011curse} - Pruning
+\item Consider a deterministic planning problem for a finite horizon $t$ with terminal cost $C(t)\colon \S\ra \R$
+\item Let $\G\colon \S\ra \S$ be an operator that takes terminal cost $C(t)$ to first stage cost $C(0)$
+\item $\U$ is $\minp$ linear, i.e.,
+        \begin{itemize}
+        \item $\G(C_1(t)\op C_2(t))=\G(C_1(t))\op \G(C_2(t))$
+        \item $\G(\delta\om C(t))=\G(C(t))+\delta\one$
+        \end{itemize}
 \end{itemize}
+\end{block}
 
-\end{block}
-\begin{block}{Our Work}
-Chandrashekar Lakshminarayanan and Shalabh Bhatnagar, Approximate Dynamic Programming with $\minp$ linear basis for Markov Decision Processes, CDC 2014
-\end{block}
 \end{frame}
+
 
 
 \begin{frame}[fragile]{$\minp$ Algebra}
@@ -621,7 +623,6 @@ Multiplication: $x\om y\eqdef x+y$
 &=\Phi \om \tr \,\text{~is~a~sub-semimodule}
 \end{align*}
 \end{block}
-
 \begin{block}{Projection in $\minp$}
 \begin{itemize}
 \item Exact
@@ -633,13 +634,10 @@ Multiplication: $x\om y\eqdef x+y$
 \Pi^W_M J&=\{\min \Phi \om r | W\om \Phi \om r \geq W\om J\},\,W\text{~is~a~$m\times |\S|$test-matrix}
 \end{align*}
 \end{itemize}
-
 \end{block}
-
-
-
-
 \end{frame}
+
+
 
 \begin{frame}{Projections in the $(\min,+)$ basis}
 \begin{itemize}
@@ -793,7 +791,7 @@ $\mbox{ }$
 \end{minipage}
 \end{tabular}
 \end{table}
-\begin{block}{Open Problems}
+\begin{block}{Problems}
 \begin{itemize}
 \item Qs: Choose the right compression to eliminate norm mismatch?\\
 {Ans:\color{teal}{$\minp$ linear basis}}+ \cite{melo2007q}
@@ -858,7 +856,9 @@ Chandrashekar, L.; Bhatnagar, S.; Szepesvari, C., ``A Linearly Relaxed Approxima
 \item $\underbrace{\norm{J^*-\tj}_{1,c}}_{\text{Error in ALP}}\leq \frac{2}{1-\beta_\psi}\underset{r\in \R^k}{\min}\underbrace{||J^*-\Phi r||_{\infty,\psi}}_{\text{Best in the basis}}$
 \item \cite{de2003linear,de2004constraint} choose $\psi$ to be large in un-important parts of state space
 \end{itemize}
+\begin{block}{Queuing Example}
 
+\end{block}
 
 \end{frame}
 

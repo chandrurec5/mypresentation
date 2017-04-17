@@ -1,0 +1,186 @@
+\documentclass{article}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\la}{\leftarrow}
+\newcommand{\ua}{\uparrow}
+\newcommand{\da}{\downarrow}
+\renewcommand{\S}{\mathcal{S}}
+\newcommand{\p}{\pause}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Y}{\mathcal{Y}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\E}{\mathbf{E}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\eqdef}{\stackrel{\cdot}{=}}
+\newcommand{\tu}{\tilde{u}}
+\newcommand{\tj}{\tilde{J}}
+\newcommand{\tr}{\tilde{r}}
+\newcommand{\minp}{(\min,+)}
+\newcommand{\op}{\oplus}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\om}{\otimes}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\V}{\mathcal{V}}
+\newcommand{\mb}{\mbox{ }}
+\newcommand{\norm}[1]{\|#1\|}
+\newcommand{\inorm}[1]{\|#1\|_{\infty}}
+\newcommand{\snorm}[1]{\left\|#1\right\|}
+\newcommand{\sinorm}[1]{\left\|#1\right\|_{\infty}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\hj}{\hat{J}}
+\newcommand{\mn}{$\infty,\psi$}
+\newcommand{\hg}{\hat{\Gamma}}
+\newcommand{\hr}{\hat{r}}
+\newcommand{\tv}{{V}}
+\newcommand{\hv}{\hat{V}}
+\newcommand{\et}{||\Gamma J^*-\hg J^*||_\infty}
+\newcommand{\etmn}{||\Gamma J^*-\hg J^*||_{\mn}}
+\usepackage{comment}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{pifont}
+\usepackage{nccmath} % mfrac
+\usepackage{amsmath,amsthm}
+\usepackage{array}
+\usepackage{latexsym}
+\usepackage{mathtools}
+\usepackage{amssymb,amsthm}
+\usepackage{amsfonts}
+
+
+
+% use Times
+\usepackage{times}
+% For figures
+\usepackage{graphicx} % more modern
+%\usepackage{epsfig} % less modern
+
+
+% For citations
+\usepackage{natbib}
+\usepackage{amsmath}
+
+% For algorithms
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+% As of 2011, we use the hyperref package to produce hyperlinks in the
+% resulting PDF.  If this breaks your system, please commend out the
+% following usepackage line and replace \usepackage{icml2016} with
+% \usepackage[nohyperref]{icml2016} above.
+\usepackage{hyperref}
+
+% Packages hyperref and algorithmic misbehave sometimes.  We can fix
+% this with the following command.
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+% Employ the following version of the ``usepackage'' statement for
+% submitting the draft version of the paper for review.  This will set
+% the note in the first column to ``Under review.  Do not distribute.''
+\usepackage{icml2016}
+
+% Employ this version of the ``usepackage'' statement after the paper has
+% been accepted, when creating the final version.  This will set the
+% note in the first column to ``Proceedings of the...''
+%\usepackage[accepted]{icml2016}
+
+
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+\icmltitlerunning{IIT Presentation}
+
+\begin{document}
+
+\onecolumn
+\icmltitle{IIT Presentation}
+\section{Abstract}
+Real world is often uncertain. Starting from the time one waits for a bus to the amount of rainfall in a year. And we as humans or the algorithms that we design have make decision in the face of such uncertainty. However, given the complexity and the inherent uncertainty of the real world, it is not possible to make exact decisions. Thus, we have to come up with approximate decisions. And questions are how to compute such approximate decisions in a stable manner, and what can be said about the performance of such policies. My research efforts have been towards throwing light into these questions.
+
+The title of the talk is Sequential Decision Making Under Uncertainty.
+\begin{itemize}
+\item The talk is organized as follows
+\item First we look at the framework for sequential decision making namely Markov Decision Process
+\item We will look at exact dynamic programming which are the blue print algorithms to compute optimal decisions
+\item Then we look at the  Approximate dynamic programming discuss the need, goals, issues or gaps with the state of the art and the important questions -some of which I was able address during the course of my research
+Then we discuss in detail two of my works
+1) based on tropical linear algebra
+2) some recent results that further our understanding of approximate linear programming formulation
+\end{itemize}
+
+\section{MDP}
+We now look at the MDP framework. First we will begin with a motivating example
+\subsection{Mouse}
+The mouse wants to reach the cheese. It can sense its position in terms of the (x,y) position. We also assume that the environment has some noise in the form of random displacements.
+So, what do we mean by decisions here? it is a map $u^*$ from position to the immediate movement of the mouse. Due to the randomness we might need this map for all the possible states. Further, there is a ``temporal" nature to these decisions, i.e., we obtain a sequence of states and actions.
+\subsection{Complex Systems}
+The paradigm of decision making is ubiquitos and occurs in various applications. Such as atari games or robosoccer which has captured the attention of Artificial Intelligence/Machine learning community, or queuing networks usually of interest to communications community and inventroy control which is of interest to the operations research community. Conceptually, it is better to imagine the problem to be one where we find the human/algorithm receiving observations of the environment and needs to make decisions, so there is this system in loop flavour to these problems.
+\subsection{What and What not?}
+The system in loop is significantly different from looking at a mere data stream. In these class of problems there are no labels such as right or wrong. One needs to interact with the environment. Thus it is a problem of control of a stochastic dynamical systems where the current decisions affect the future. And the aim is to control the system.
+\subsection{MDPs}
+The sequential decision making problems are stated in the formal language of Markov Decision Processes. An MDP is given by a five tuple.
+The state space $\S$, the action space $\A$, the Markovian transition structure that says given the present the future is independent of the past. We also assume that this behaviour is time homogeneous. Then the reward structure which is a map from the state-action space to reals.\\
+Associated with MDP is the notions of policy and value function. A policy is a map that specifies the action selection mechanism and the value function is specifies the expected total discounted reward that is collected by following a given policy. Here, the discount factor ensures that the immediate future is more important than the distant future. And our aim is to achieve optimality, i.e., find the best policy and the best possible value that can be obtained. We call $J_u$ as value function or the value vector and naturally identify it with $\R^{|\S|}$.
+
+\subsection{Paradigm Shift}
+
+Let us now compare the MDP framework with the notion of decision making that we know from machine learning or detection/hypothesis testing.
+The classification problem has data in the form of $(x,y)=(feature,class)$ and the aim is learn the rule that maps features to any of the $K$ classes.
+Suppose we are given the model know the underlying class conditional distributions, the problem is straightforward. Now, in the case of MDPs this is not the case, i.e., even when we are given the model we still need to compute $u^*$ and this is non-trivial.
+
+\subsection{Curse of Dimensionality}
+We know that the complexity is polynomial in the number of states and actions. However, the growth of the state space is the issue. Consider the example of a queue with buffer size $n$, and then a queuing system with $q$ different queues.
+\subsection{Curse of Dimensionality}
+Due to the curse, it is hard to compute the exact decisions. A way to tackle this predicament is by compressing the problem somehow and then compute and approximate decision. Then the question that we need to answer is how good is the approximate decision rule in comparison to the exact and optimal decision rule
+\subsection{Lack of Model}
+Further, in many cases the explicit model is not available but only samples via direct interaction. Thus we need to design algorithms that keep updating in an online manner.
+And it is important to understand the stability of the iterates of the algorithm.
+
+
+\section{Exact Dynamic Programming}
+\subsection{Bellman Equation}
+We said we need to compute the optimal decision and this can be done by computing the optimal value. And the optimal value can be computed by the greedy principle which says the best is current best+ future best. Formally this can be stated as the Bellman equation.
+\subsection{Bellman Operator}
+\subsection{DP algorithms}
+We now look at the basic algorithms which form the blue print to compute optimal decisions. Value iteration is based on the power method. Policy iteration is based on the idea of policy improvement. We will look at the linear programming formulation in a much more detailed fashion.
+The key take away is the all these methods are convergent and exact.
+
+\section{Approximate Dynamic Programming}
+\subsection{Definitions}
+We will now look at certain norms that will be useful.
+Here the modified $L_{\infty,\psi}$ is going to be useful for us. It allows to control the error in different parts of the state space differently.
+We say that a function $f$ is superharmonic to $g$ when $f\geq g$
+\subsection{Defnitions}
+The notion of maximal inflation is to compute the one step growth of the function. This is usually defined in the context of stability, but here we will use it for approximablility.
+A Lyapunov function is one that get contracted by the system, so to speak. And finally contraction property in the $L_\infty$ norm.
+\subsection{ADP goals}
+We will now formalize the notions of approximate decision making. Formally this paradigm is called approximate dynamic programming. So why do we need it. As we mentioned before and even in the small toy grid example that we looked at, we need to populate the table. This might be tedious when there are a large number of states. So, we are not going to do that in practice. Instead, we are going to compress and somehow want to get away with less computations. So, ADP is just the name for dynamic programming + compression. Here, we first compute an approximate value function $\tilde{J}$ and then compute say a greedy policy $\tilde{U}$. And we know from an earlier result (the reference here is a book) that the if the prediction error is controlled then the loss of performance can also be controlled.
+
+There are also other methods that directly handle the policy. While some of my other work related to stability of RL algorithms is related to this policy compression business, I will not be discussing it in this talk.
+\subsection{How to compress?}
+We look in the direction of linear regression where the idea is to express the target as a linear combination of a set of pre-selected basis functions. Here, $\Phi$ is a feature matrix and $\tilde{r}$ is a weight vector to be learnt. And, the idea is chose fewer basis functions than the size of the state space. Very closely related to regression is the projection operator $\Pi$ which can be expressed as this optimization problem.
+\subsection{How to compute $\tj$?}
+Now that we have compressed the value function, it remains for us to still compute it. So we look at the exact dynamic programming algorithms and then the see whether we can plug in this approximation. First, we can check whether an approximate value iteration method will work. We hit our first road block due to the fact that there is norm incompatibility between $T$ and $\Pi$. However, restricted conditions were given by Melo et al, where it says that the features should have some convexity property. So, we move onto check the status of approximate policy iteration, and yet again we hit a road block, where the bound on the prediction error is only in the two norm. Though all norms are equivalent in finite dimensions, controlling the $L_\infy$ norm is more tighter. So policy improvement is not guaranteed and hence the procedure can oscillate amongst bad policies.
+\subsection{Approximate Linear Programming}
+The approximation idea can also be combined with linear programming. The Approximate Linear Program was first introduced by \cite{schweitzer1985generalized} and later the performance bounds were shown by \cite{de2003linear}. While we will see this formulation in a bit more detail, what we would like to note here is that, even in this formulation we hit a road block in the form of a large number of constraints.
+\section{Research Goals}
+With this perspective of dynamic programming and then approximate dynamic programming, we know that we have to compress one way or the other and compute an approximate value function. However, by now we are also aware of the road blocks and the goal is to remove them as much as possible or throw more light on where the structure is breaking.
+
+\subsection{Research Contributions}
+We now look at some of the highlights contributions that I could make to these questions. One of the first stepping stones was to recognize that tropical linearity has been looked in the context of ADP with deterministic systems. Here, one deals with different projection onto sub-semimodules. The crux is that when one works with tropical linearity as we will see contraction maps and fixed points occur much more naturally. The second most important leap is to combine cleverly the ideas in tropical linear algebra and conventional algebra to study the approximate linear program. And further, derive geometric conditions that will guide us in addressing the problem of constraint reduction. In all of this superharmonicity plays a key role.
+
+\section{ADP in Tropical Algebra}
+
+Bacelli et al wrote this book on Synchronization and linearity which deals with synchronization systems. We will briefly look at what they are. Then Cohen etal describes how to project onto sub-semimodules (which are like subspaces but with respect to a semi-ring). Akian et al used the projection ideas for deterministic control, follwed by McEneany et al who applied it for HJB PDEs and then Gaubert et al studied some pruning methods with such basis.
+
+
+
+
+
+
+
+\end{document}
+
+
+
+
