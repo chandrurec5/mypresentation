@@ -82,6 +82,8 @@ Control
 \end{frame}
 
 
+\begin{comment}
+
 
 \begin{frame}[fragile]{What? and What not?}
 
@@ -103,9 +105,10 @@ Control
 \centering Take {\color{orange}{control}} of the system
 \end{block}
 \end{frame}
+\end{comment}
 
 \begin{frame}[fragile]{Markov Decision Process (MDP)}
-\begin{block}{MDP <\S,\A,P,g,\alpha>}
+\begin{block}{MDP $\M=<\S,\A,P,g,\alpha>$}
 \begin{itemize}
 \item State space $\S=\{s^1,\ldots,s^n\}$
 \item Action space $\A=\{a^1,\ldots,a^d\}$
@@ -127,6 +130,21 @@ Compute  $J^*(s)=\max_{u} J(s),\,\forall s\in \S$ and $u^*$ s.t $J_{u^*}=J^*$\fo
 \end{frame}
 
 
+\begin{frame}[fragile]{Goal}
+\begin{algorithm}[H]
+%\caption*{Stochastic Multi-Arm Bandit}
+\begin{algorithmic}[1]
+\STATE{Input: $\M=<\S,\A,P,g,\alpha>$}
+\STATE{solve_{MDP}(\M)\{}
+\STATE{$\vdots$}
+\STATE{\}}
+\STATE{Output: $u^*$, $J^*$}
+\end{algorithmic}
+
+%\label{mab1}
+\end{algorithm}
+
+\end{frame}
 
 \begin{frame}[fragile]{Different Paradigms in Decision Making}
 \begin{block}{Classification}
@@ -299,9 +317,10 @@ J^*(s)&=\max_{a\in \A} g_a(s)+\alpha p_a(s,\cdot)^\top J^*\\
 Q^*(s,a)&= g_a(s)+\alpha p_a(s,\cdot)^\top \max_{a\in \A} Q^*(\cdot,a)
 \end{align*}
 \end{block}
-\begin{block}{State-Action Values $Q^*\in \R^{|\S|\times |\A|}$}
-$u^*(s)\eqdef \U(Q^*)(s) =\arg\max_{a\in \A} Q^*(s,a)$
-\end{block}
+
+%\begin{block}{State-Action Values $Q^*\in \R^{|\S|\times |\A|}$}
+%$u^*(s)\eqdef \U(Q^*)(s) =\arg\max_{a\in \A} Q^*(s,a)$
+%\end{block}
 
 
 %\begin{tikzpicture}[overlay]
@@ -311,13 +330,13 @@ $u^*(s)\eqdef \U(Q^*)(s) =\arg\max_{a\in \A} Q^*(s,a)$
 
 
 \begin{frame}[fragile]{Bellman Operator}
-\begin{block}{Bellman Operator(s)}
+\begin{block}{Definition}
 \begin{align*}
 (TJ)(s)&\eqdef\max_{a\in \A} g_a(s)+\alpha p_a(s,\cdot)^\top J\\
-(HQ)(s,a)&\eqdef g_a(s)+\alpha p_a(s,\cdot)^\top \max_{a\in \A}Q(\cdot,a)
+%(HQ)(s,a)&\eqdef g_a(s)+\alpha p_a(s,\cdot)^\top \max_{a\in \A}Q(\cdot,a)
 \end{align*}
 \end{block}
-\begin{block}{Properties of $T$ (and $H$)}
+\begin{block}{Properties of $T$}
 \begin{itemize}
 \item {Monotonicity:} $T J_1\geq T J_2, \mb \forall$ $J_1\geq J_2$
 \item {Shift:} $T (J+k\one)= T J+\alpha k\one$
@@ -325,7 +344,7 @@ $u^*(s)\eqdef \U(Q^*)(s) =\arg\max_{a\in \A} Q^*(s,a)$
 \end{itemize}
 \end{block}
 \begin{block}{Fixed Point Equation}
-\centering $J^*=TJ^*$, $Q^*=HQ^*$
+\centering $J^*=TJ^*$, %$Q^*=HQ^*$
 \end{block}
 \end{frame}
 
@@ -578,19 +597,34 @@ $\norm{\phi_i}_\infty=1,\, \sum_i |\Phi(s,i)|\leq 1,\,\forall s\in \S, \,\forall
 \section{ADP in Tropical Algebra}
 
 \begin{frame}[fragile]{Tropical Algebra}
-\begin{block}{$\maxp$ Semiring}
-Addition: $x\op y\eqdef\min\{x,y\}$\\
+
+\begin{block}{$\R_{\max}$ Semiring}
+Addition: $x\op y\eqdef\max\{x,y\}$\\
 Multiplication: $x\om y\eqdef x+y$
 \end{block}
 
+
+\begin{block}{$\R_{\min}$ Semiring}
+Addition: $x\op y\eqdef\min\{x,y\}$,\\
+Multiplication: $x\om y\eqdef x+y$
+\end{block}
+
+\begin{block}{Identity and Zero}
+\begin{itemize}
+\item $x\op \infty=x$
+\item $x\om 0 =x$
+\end{itemize}
+\end{block}
+
+\begin{block}{Semimodules}
+$\R_{\max}^{|\S|}$, $\R_{\min}^{|\S|}$ are Semimodules
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Applications}
 \begin{block}{Synchronization}
-X_4=\max(X_1,X_2,X_3)\\
+$X_4=\max(X_1,X_2,X_3)$\\
 Examples: Rail network, Shop floor
-\end{block}
-
-\begin{block}{$\minp$ Semiring}
-Addition: $x\op y\eqdef\min\{x,y\}$\\
-Multiplication: $x\om y\eqdef x+y$
 \end{block}
 
 
@@ -598,7 +632,7 @@ Multiplication: $x\om y\eqdef x+y$
 \begin{itemize}
 \item Consider a deterministic planning problem for a finite horizon $t$ with terminal cost $C(t)\colon \S\ra \R$
 \item Let $\G\colon \S\ra \S$ be an operator that takes terminal cost $C(t)$ to first stage cost $C(0)$
-\item $\U$ is $\minp$ linear, i.e.,
+\item $\G$ is $\minp$ linear, i.e.,
         \begin{itemize}
         \item $\G(C_1(t)\op C_2(t))=\G(C_1(t))\op \G(C_2(t))$
         \item $\G(\delta\om C(t))=\G(C(t))+\delta\one$
@@ -609,33 +643,45 @@ Multiplication: $x\om y\eqdef x+y$
 \end{frame}
 
 
+\begin{frame}[fragile]{Tropical Semiring}
+\begin{block}{Literature}
+\begin{itemize}
+\item \cite{baccelli1994synchronization} - ``Synchronization and Linearity''
+\item \cite{cohen1996kernels} - Projection onto Semimodules
+\item \cite{akian2008max} - Deterministic Control
+\item \cite{mceneaney2008curse,mceneaney2009convergence} - HJB PDEs
+\item \cite{gaubert2011curse} - Pruning
+\end{itemize}
 
-\begin{frame}[fragile]{$\minp$ Algebra}
-
-\begin{block}{Semiring}
-Addition: $x\op y\eqdef\min\{x,y\}$\\
-Multiplication: $x\om y\eqdef x+y$
 \end{block}
+\begin{block}{Our Work}
+Chandrashekar Lakshminarayanan and Shalabh Bhatnagar, Approximate Dynamic Programming with $\minp$ linear basis for Markov Decision Processes, CDC 2014
+\end{block}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Linear Span}
 
 \begin{block}{Linear Basis in $\minp$ }
 \begin{align*}
-\tilde{J}&=\min\{\phi_{1}+\tr(1),\ldots,\phi_{k}+\tr(k)\}\\
+\tilde{J}&=\min\{\phi_{1}+\tr(1),\ldots,\phi_{k}+\tr(k)\}\subset \R_{\min}^{|\S|}\\
 &=\Phi \om \tr \,\text{~is~a~sub-semimodule}
 \end{align*}
 \end{block}
-\begin{block}{Projection in $\minp$}
-\begin{itemize}
-\item Exact
+
+\begin{block}{Exact Projection}
 \begin{align*}
 \Pi_M J&=\{\min \Phi \om r | \Phi \om r \geq J\},\,\text{minimum~is~component-wise}
 \end{align*}
-\item Variational
-\begin{align*}
-\Pi^W_M J&=\{\min \Phi \om r | W\om \Phi \om r \geq W\om J\},\,W\text{~is~a~$m\times |\S|$test-matrix}
-\end{align*}
+\begin{itemize}
+\item Superharmonic: $\Pi_M J\geq J$
+\item $k$ variables $|\S|$ inequalities
 \end{itemize}
 \end{block}
+
 \end{frame}
+
 
 
 
@@ -676,69 +722,67 @@ ymax=1.5
 \end{block}
 \end{frame}
 
-
-
-\begin{frame}[fragile]{APD in $\minp$}
-\begin{block}{Approximate Value Iteration}
-$\Phi \om r_{t+1}=\Pi^W_M H \Phi \om r_t$
-\end{block}
+\begin{frame}[fragile]{Use of Test Functions}
+\begin{block}{Weak Projection}
+\begin{align*}
+\Pi^W_M J&=\{\min \Phi \om r | W\om \Phi \om r \geq W\om J\},\,W\text{~is~a~$m\times |\S|$test-matrix}
+\end{align*}
 \begin{itemize}
-\item $\Pi^W_M H$ is a contraction
-\item $r_t \ra \tr$
-
+\item $W$ can be used to sample constraints
+\item Let $s_1,\ldots,s_m$ be sampled states, then $W(i,s_i)=0,i=1,\ldots,m$ else $W(i,j)=\infty,\,\forall j\neq s_i$
+\item $k$ variables $m$ constraints
+\item Not superharomic; shows up as additional source of error
 \end{itemize}
+\end{block}
+\end{frame}
 
+\begin{frame}[fragile]{Composing $\Pi^W_M T$}
 \begin{block}{Magic of $\minp$?}
-{{$\Pi^W_M$ composes {\color{orange}{`nicely}'}with $H$}}
+{{$\Pi^W_M$ composes {\color{orange}{`nicely}'}with $T$}}
 \end{block}
 \begin{block}{Properties of $\Pi^W_M$}
 \begin{itemize}
+\item Fits well with $T$
+    \begin{align*}
+    TJ(s)&=\max \cdot\\
+    TJ(s)&\geq \cdot\\
+    &\geq \vdots\\
+    &\geq \cdot
+    \end{align*}
 \item {Monotonicity:} $\Pi^W_M J_1\geq \Pi^W_M J_2, \mb \forall$ $J_1\geq J_2$
 \item {Shift:} $\Pi^W_M J_1= \Pi^W_M J_2+\mathbf{1}$ for $J_1\eqdef J_2+\mathbf{1}$
-\item $\Pi^W_M H$ is a contraction map in $L_\infty$
+\item $\Pi^W_M T$ is a contraction map in $L_\infty$
 \end{itemize}
 \end{block}
 
-
-
 \end{frame}
 
+\begin{frame}[fragile]{ADP in $\minp$}
+\begin{block}{Approximate Value Iteration}
+$\Phi \om r_{t+1}=\Pi^W_M T \Phi \om r_t$
+\end{block}
 
-\begin{frame}[fragile]
-\frametitle{Theoretical Results}
 \begin{block}{Main Theorem}
-Let $\tilde{Q}=\Phi \om \tr$ and $r^*\eqdef\arg\min_{r}\norm{Q^*-\Phi \om r}_\infty$
+Let $\tilde{J}=\Phi \om \tr$ and $r^*\eqdef\arg\min_{r}\norm{J^*-\Phi \om r}_\infty$
 %\begin{align*}
 %||J^*-\tilde{J}||_\infty&\leq \frac{2}{1-\alpha}\arg\min_r||J^*-\Phi\om r||_\infty
 %\end{align*}
+%\begin{align*}
+%||Q^*-\Phi\om \tr||_\infty\leq \frac{2}{1-\alpha}(||Q^*-\Phi\om r^*||_\infty+||\Phi\om r^*-\Pi_M^W \Phi\om r^*||_\infty).
+%\end{align*}
 \begin{align*}
-||Q^*-\Phi\om \tr||_\infty\leq \frac{2}{1-\alpha}(||Q^*-\Phi\om r^*||_\infty+||\Phi\om r^*-\Pi_M^W \Phi\om r^*||_\infty).
+\norm{J^*-\Phi\om \tr}_\infty\leq \frac{2}{1-\alpha}(\norm{J*-\Phi\om r^*}_\infty+\norm{\Phi\om r^*-\Pi_M^W \Phi\om r^*}_\infty).
 \end{align*}
-
 \begin{itemize}
 \item Bound in the $L_\infty$ norm
-\item Guaranteed Convergence
+\item Guaranteed Convergence $r_t \ra \tr$
 \item Curse of Dimensionality reduction ($k$ variables and $m$ inequalities)
 \item Error has two parts $i)$ approximation error $ii)$ weak projection error
 \end{itemize}
-
 \end{block}
-
-\begin{comment}
-\begin{block}{Proof}
-Let $\epsilon=\norm{J_1-J_2}_\infty$, then
-\begin{align*}
-J_1-\epsilon \one&\leq J_2 \leq J_1+ \epsilon \one\\
-T(J_1-\epsilon \one)&\leq TJ_2 \leq T(J_1+ \epsilon \one)\\
-TJ_1- \alpha\epsilon \one&\leq TJ_2 \leq TJ_1+ \alpha\epsilon \one\\
-\Pi_M (TJ_1- \alpha\epsilon \one)&\leq \Pi_M T J_2 \leq \Pi_M(TJ_1+ \alpha\epsilon \one)\\
-\Pi_M TJ_1- \alpha\epsilon \one&\leq \Pi_M T J_2 \leq \Pi_MTJ_1+ \alpha\epsilon \one
-\end{align*}
-$\norm{\Pi_M TJ_1-\Pi_M TJ_2}_\infty=\alpha\epsilon$
-\end{block}
-\end{comment}
-
 \end{frame}
+
+
 
 
 
@@ -746,7 +790,7 @@ $\norm{\Pi_M TJ_1-\Pi_M TJ_2}_\infty=\alpha\epsilon$
 \begin{block}{}
 $\mbox{ }$
 $\mbox{ }$$\mbox{ }$
-\includegraphics[scale=0.29]{mcarpic.jpeg}
+\includegraphics[scale=0.29]{mcar.png}
 $\mbox{ }$
 \includegraphics[scale=0.21]{actval.jpeg}\\
 $\mbox{ }$\\
@@ -851,6 +895,9 @@ Chandrashekar, L.; Bhatnagar, S.; Szepesvari, C., ``A Linearly Relaxed Approxima
 \end{frame}
 
 \begin{frame}[fragile]{Saliency of ALP}
+\begin{block}{}
+$\underbrace{\norm{J^*-\tj}_{1,c}}_{\text{Error in ALP}}\leq \frac{2}{1-\alpha}\underset{r\in \R^k}{\min}\underbrace{||J^*-\Phi r||_{\infty}}_{\text{Best in the basis}}$
+\end{block}
 \begin{itemize}
 \item $\norm{J^*-\tj}_{1,c}$, can choose $c$ to control the error
 \item $\underbrace{\norm{J^*-\tj}_{1,c}}_{\text{Error in ALP}}\leq \frac{2}{1-\beta_\psi}\underset{r\in \R^k}{\min}\underbrace{||J^*-\Phi r||_{\infty,\psi}}_{\text{Best in the basis}}$
@@ -914,7 +961,7 @@ Under suitable conditions, for a small $\epsilon>0$
 \item Sampling distribution depends on $u^*$
 \item Use of other sampling distribution will have importance sampling ratio
 \item Depends on combinatorial arguments (VC-dimension)
-\item \cite{farias2006tetris,de2003linear,de2004constraint} Empirical results good for variety of sampling distribution (no knowledge of $u^*$) on various domains (Tetris, Queues etc)
+\item Empirical results good for variety of sampling distribution (no knowledge of $u^*$) on various domains (Tetris, Queues etc)
 \end{itemize}
 \end{block}
 \begin{block}{Gap}
@@ -937,6 +984,7 @@ Theory does not explain empirical evidence
 \end{frame}
 
 \begin{frame}[fragile]{Novel Contraction Operators}
+
 \begin{block}{Superharmonic Property}
 ALP as well as $\minp$ algebra
 \end{block}
@@ -952,7 +1000,7 @@ ALP as well as $\minp$ algebra
 
 \begin{block}{Approximate Least Upper Bound $\hg$}
 \begin{align*}
-&\hat{r}_c={\arg\min}_r \,\mb c^\top \Phi r\,,\\
+&\hat{r}_c={\arg\min}_{r} \,\mb c^\top \Phi r\,,\\
 &\text{s.t.} \,\,\, W^\top  \Phi r\geq W^\top TJ\,\\
 &(\hg J)(s)\eqdef(\Phi \hr_{e_s,J})(s),\, s=1,\ldots,|\S|\,.
 \end{align*}
@@ -1026,10 +1074,17 @@ $||J^*-\hj||_{1,c}$ for $\zeta=0.999$& $110$&   $180.5608$& $82$& $1.25\times 10
 \begin{block}{Matrices}
 $W_a$- Aggregation, $W_i$ -Ideal Sampler, $W_c$ - Sample using $c$, $W_r$ - Random.
 \end{block}
-
-
 \end{frame}
 
+\section{Future Plans}
+\begin{frame}[fragile]{Future Research Goals}
+\begin{itemize}
+\item Large scale MDPs based on the LP
+\item Finite time behaviour of Reinforcement Learning (RL) algorithms
+\item Regret minimization for RL
+\item Deep Reinforcement leanring
+\end{itemize}
+\end{frame}
 \begin{frame}[fragile]{Teaching Plan}
 \textbf{Computer Science}
 \begin{enumerate}
@@ -1051,9 +1106,28 @@ $W_a$- Aggregation, $W_i$ -Ideal Sampler, $W_c$ - Sample using $c$, $W_r$ - Rand
 \item Signals and Systems
 \item Classical and Modern Control Theory
 \end{enumerate}
-
+\end{frame}
+\begin{frame}[fragile]{Advanced Courses}
+\begin{itemize}
+\item Reinforcement Learning
+\item Stochastic Approximation Algorithms
+\item Optimization
+\end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]{Acknowledgements}
+\begin{itemize}
+\item Shalabh Bhatnagar
+\item Csaba Szepesvari
+\item Srujana Sadula
+\item Ayush Dubey
+\item Rishabh Singla
+\item Sindhu Padakandla
+\item Rajkumar Maity
+\item Chithralekha Balamurugan
+\item Sujit Gujar
+\end{itemize}
+\end{frame}
 
 \begin{frame}[allowframebreaks]{References}
 \bibliographystyle{plainnat}
